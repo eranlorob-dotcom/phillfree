@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Philippe Lamoureux | Artiste Visuel</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS pour la mise en page rapide -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Configuration Tailwind et CSS personnalisé -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        neon: {
+                            cyan: '#00f3ff',
+                            magenta: '#ff00ff',
+                            yellow: '#fffb00',
+                            dark: '#050505',
+                            card: '#111111'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Styles personnalisés pour l'effet Néon et Jazzé */
+        body {
+            background-color: #050505;
+            color: #e2e8f0;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(0, 243, 255, 0.05), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(255, 0, 255, 0.05), transparent 25%);
+        }
+
+        .text-glow-cyan {
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.7), 0 0 20px rgba(0, 243, 255, 0.5);
+        }
+        .text-glow-magenta {
+            text-shadow: 0 0 10px rgba(255, 0, 255, 0.7), 0 0 20px rgba(255, 0, 255, 0.5);
+        }
+        
+        .border-glow-cyan {
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.3), inset 0 0 10px rgba(0, 243, 255, 0.1);
+            border-color: rgba(0, 243, 255, 0.5);
+        }
+        
+        .border-glow-magenta:hover {
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.5), inset 0 0 15px rgba(255, 0, 255, 0.2);
+            border-color: rgba(255, 0, 255, 0.8);
+        }
+
+        .neon-button {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .neon-button::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.4s ease;
+        }
+        
+        .neon-button:hover::before {
+            left: 100%;
+        }
+
+        /* Effet de grain sur les images pour le côté texturé/brut */
+        .art-card img {
+            transition: transform 0.5s ease, filter 0.5s ease;
+            filter: contrast(1.1) saturate(1.2);
+        }
+        
+        .art-card:hover img {
+            transform: scale(1.05);
+            filter: contrast(1.2) saturate(1.4);
+        }
+
+        /* Toast Notification */
+        #toast {
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        #toast.show {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-neon-magenta selection:text-white">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 top-0 bg-neon-dark/80 backdrop-blur-md border-b border-neon-cyan/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex-shrink-0">
+                    <a href="#" class="font-display font-bold text-2xl tracking-widest text-white text-glow-cyan uppercase">
+                        PL<span class="text-neon-magenta">.</span>Art
+                    </a>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8 font-display">
+                        <a href="#accueil" class="text-gray-300 hover:text-neon-cyan transition-colors px-3 py-2 rounded-md text-sm font-medium">Accueil</a>
+                        <a href="#demarche" class="text-gray-300 hover:text-neon-magenta transition-colors px-3 py-2 rounded-md text-sm font-medium">Démarche</a>
+                        <a href="#galerie" class="text-gray-300 hover:text-neon-yellow transition-colors px-3 py-2 rounded-md text-sm font-medium">Galerie</a>
+                        <a href="#admin" class="border border-neon-cyan text-neon-cyan hover:bg-neon-cyan hover:text-black transition-all px-4 py-2 rounded-md text-sm font-bold shadow-[0_0_10px_rgba(0,243,255,0.2)]">Module Artiste</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="accueil" class="min-h-screen flex items-center justify-center relative overflow-hidden pt-20">
+        <div class="absolute inset-0 z-0 opacity-20">
+            <!-- Image de fond floutée -->
+            <img src="https://images.unsplash.com/photo-1541701494587-cb58502866ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80" alt="Texture abstraite" class="w-full h-full object-cover blur-sm">
+        </div>
+        <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+            <h1 class="font-display font-bold text-5xl md:text-7xl lg:text-8xl text-white mb-6 uppercase tracking-tighter">
+                Philippe <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-neon-magenta to-neon-yellow text-glow-cyan">Lamoureux</span>
+            </h1>
+            <p class="mt-4 text-xl md:text-2xl text-gray-300 font-light max-w-2xl mx-auto mb-10">
+                "Un besoin viscéral de créer du beau au quotidien."
+            </p>
+            <a href="#galerie" class="neon-button inline-block border-2 border-neon-magenta text-neon-magenta font-display font-bold text-lg px-8 py-4 rounded-full hover:bg-neon-magenta hover:text-white hover:shadow-[0_0_20px_rgba(255,0,255,0.6)]">
+                Explorer les œuvres
+            </a>
+        </div>
+    </section>
+
+    <!-- Démarche / CV Section -->
+    <section id="demarche" class="py-24 bg-gradient-to-b from-neon-dark to-[#0a0a0a]">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-4 text-glow-magenta uppercase tracking-wide">Démarche Artistique</h2>
+                <div class="h-1 w-24 bg-neon-cyan mx-auto rounded-full shadow-[0_0_10px_rgba(0,243,255,0.8)]"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6 text-gray-300 text-lg font-light leading-relaxed">
+                    <p>
+                        Mon approche artistique est profondément puisée de mes émotions, sensations et impulsions. J'intègre souvent la <strong class="text-neon-cyan font-normal">récupération d'objets usuels</strong> directement dans le cœur de mes œuvres.
+                    </p>
+                    <p>
+                        Je crée principalement des <strong class="text-neon-magenta font-normal">peintures abstraites expressives</strong>, où la texture complexe et les couleurs vibrantes dominent, tout en explorant la modélisation et les techniques mixtes.
+                    </p>
+                    
+                    <div class="pt-6 border-t border-gray-800">
+                        <h3 class="font-display text-2xl text-neon-yellow mb-4">Parcours & Expertise</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <span class="text-neon-cyan mr-3">▹</span>
+                                <span>Expertise en construction et menuiserie (DEP Ébénisterie), enrichissant mon rapport brut à la matière.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-neon-cyan mr-3">▹</span>
+                                <span>Formations cinématographiques (AQTIS 101) et influence scénographique.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-neon-cyan mr-3">▹</span>
+                                <span>Mentorat approfondi : Aquarelle, dessin, pastel sec et perception visuelle.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="relative">
+                    <!-- Cadre néon pour la photo de profil / d'atelier -->
+                    <div class="absolute inset-0 border-2 border-neon-yellow transform translate-x-4 translate-y-4 rounded-lg z-0 opacity-50"></div>
+                    <img src="https://images.unsplash.com/photo-1605721911519-3dfeb3be25e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Atelier de l'artiste" class="relative z-10 rounded-lg w-full h-auto object-cover shadow-2xl grayscale hover:grayscale-0 transition-all duration-700">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Galerie Section -->
+    <section id="galerie" class="py-24 bg-[#0a0a0a]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-4 text-glow-cyan uppercase tracking-wide">Galerie</h2>
+                <p class="text-gray-400">Éclats de couleurs et textures brutes</p>
+            </div>
+
+            <!-- Grille de la galerie -->
+            <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Oeuvre 1 (Basée sur vos photos) -->
+                <div class="art-card bg-neon-card rounded-xl overflow-hidden border border-gray-800 border-glow-magenta group cursor-pointer">
+                    <div class="h-64 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" onerror="this.src='https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=800'" alt="Peinture abstraite texture" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                            <span class="text-neon-cyan font-display font-bold tracking-wider uppercase text-sm">Voir l'œuvre</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-display text-xl font-bold text-white mb-2 group-hover:text-neon-magenta transition-colors">Azazel</h3>
+                        <p class="text-gray-400 text-sm mb-4">Technique mixte, objets récupérés et acrylique sur toile.</p>
+                        <span class="inline-block px-3 py-1 bg-gray-800 text-xs text-neon-yellow rounded-full">2026</span>
+                    </div>
+                </div>
+
+                <!-- Oeuvre 2 -->
+                <div class="art-card bg-neon-card rounded-xl overflow-hidden border border-gray-800 border-glow-magenta group cursor-pointer">
+                    <div class="h-64 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1550684376-efcbd6e3f031?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Toile texturée" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                            <span class="text-neon-cyan font-display font-bold tracking-wider uppercase text-sm">Voir l'œuvre</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-display text-xl font-bold text-white mb-2 group-hover:text-neon-magenta transition-colors">Éclosion Fluorescente</h3>
+                        <p class="text-gray-400 text-sm mb-4">Superposition de couleurs vives et empâtements.</p>
+                        <span class="inline-block px-3 py-1 bg-gray-800 text-xs text-neon-yellow rounded-full">2025</span>
+                    </div>
+                </div>
+
+                <!-- Oeuvre 3 -->
+                <div class="art-card bg-neon-card rounded-xl overflow-hidden border border-gray-800 border-glow-magenta group cursor-pointer">
+                    <div class="h-64 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Abstraction géométrique" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                            <span class="text-neon-cyan font-display font-bold tracking-wider uppercase text-sm">Voir l'œuvre</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-display text-xl font-bold text-white mb-2 group-hover:text-neon-magenta transition-colors">Symétrie Rompue</h3>
+                        <p class="text-gray-400 text-sm mb-4">Peinture aérosol et acrylique sur panneau de bois.</p>
+                        <span class="inline-block px-3 py-1 bg-gray-800 text-xs text-neon-yellow rounded-full">2024</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Module Artiste (Simulation d'ajout d'œuvre) -->
+    <section id="admin" class="py-24 bg-gradient-to-b from-[#0a0a0a] to-neon-dark border-t border-neon-cyan/30 relative">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="bg-black/50 backdrop-blur-lg border border-neon-cyan/50 p-8 md:p-10 rounded-2xl shadow-[0_0_30px_rgba(0,243,255,0.15)]">
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="font-display text-3xl font-bold text-white text-glow-cyan uppercase">Module Artiste</h2>
+                    <span class="bg-neon-magenta/20 text-neon-magenta px-3 py-1 rounded text-xs font-bold border border-neon-magenta/50">Accès Privé</span>
+                </div>
+                
+                <p class="text-gray-400 mb-8 font-light">Ajoutez instantanément une nouvelle œuvre à votre galerie publique. Remplissez les champs ci-dessous.</p>
+
+                <form id="art-form" class="space-y-6">
+                    <div>
+                        <label for="titre" class="block text-sm font-medium text-neon-cyan mb-2">Titre de l'œuvre</label>
+                        <input type="text" id="titre" required placeholder="Ex: Nébuleuse texturée" 
+                               class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-colors">
+                    </div>
+
+                    <div>
+                        <label for="image-url" class="block text-sm font-medium text-neon-cyan mb-2">URL de l'image</label>
+                        <input type="url" id="image-url" required placeholder="https://lien-vers-mon-image.jpg" 
+                               class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-colors">
+                        <p class="text-xs text-gray-500 mt-2">Pour ce test, utilisez une URL valide (ex: lien Google Drive public, Unsplash).</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="annee" class="block text-sm font-medium text-neon-cyan mb-2">Année</label>
+                            <input type="number" id="annee" required placeholder="2026" value="2026"
+                                   class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-colors">
+                        </div>
+                        <div>
+                            <label for="technique" class="block text-sm font-medium text-neon-cyan mb-2">Technique</label>
+                            <input type="text" id="technique" required placeholder="Acrylique et objets" 
+                                   class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-colors">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full mt-6 bg-neon-cyan text-black font-display font-bold text-lg px-8 py-4 rounded-lg hover:bg-white transition-all shadow-[0_0_15px_rgba(0,243,255,0.4)] hover:shadow-[0_0_25px_rgba(0,243,255,0.8)]">
+                        + Publier l'œuvre dans la galerie
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black py-12 border-t border-gray-900">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h2 class="font-display font-bold text-2xl text-white mb-6 uppercase">Philippe <span class="text-neon-yellow">Lamoureux</span></h2>
+            <p class="text-gray-400 mb-2">Blainville, Québec</p>
+            <p class="text-gray-400 mb-6">philfree2189@gmail.com | 438-370-7647</p>
+            <p class="text-sm text-gray-600">© 2026 Philippe Lamoureux. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <!-- Boîte de message (Toast) -->
+    <div id="toast" class="fixed bottom-10 right-10 bg-black border-2 border-neon-cyan text-white px-6 py-4 rounded-lg shadow-[0_0_20px_rgba(0,243,255,0.5)] z-50 flex items-center gap-3">
+        <svg class="w-6 h-6 text-neon-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        <div>
+            <h4 class="font-bold text-neon-cyan font-display">Succès !</h4>
+            <p class="text-sm text-gray-300">Votre œuvre a été ajoutée à la galerie.</p>
+        </div>
+    </div>
+
+    <!-- Script JavaScript pour le Module Artiste -->
+    <script>
+        document.getElementById('art-form').addEventListener('submit', function(e) {
+            e.preventDefault(); // Empêche le rechargement de la page
+
+            // Récupérer les valeurs du formulaire
+            const titre = document.getElementById('titre').value;
+            const imageUrl = document.getElementById('image-url').value;
+            const annee = document.getElementById('annee').value;
+            const technique = document.getElementById('technique').value;
+
+            // Créer le HTML de la nouvelle carte
+            const newCard = document.createElement('div');
+            newCard.className = 'art-card bg-neon-card rounded-xl overflow-hidden border border-gray-800 border-glow-magenta group cursor-pointer animate-pulse';
+            // On enlève l'animation pulse après 2 secondes pour l'effet d'apparition
+            setTimeout(() => newCard.classList.remove('animate-pulse'), 2000);
+
+            newCard.innerHTML = `
+                <div class="h-64 overflow-hidden relative">
+                    <img src="${imageUrl}" onerror="this.src='https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=800'; this.onerror=null;" alt="${titre}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                        <span class="text-neon-cyan font-display font-bold tracking-wider uppercase text-sm">Nouveau !</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="font-display text-xl font-bold text-white mb-2 group-hover:text-neon-magenta transition-colors">${titre}</h3>
+                    <p class="text-gray-400 text-sm mb-4">${technique}</p>
+                    <span class="inline-block px-3 py-1 bg-gray-800 text-xs text-neon-yellow rounded-full">${annee}</span>
+                </div>
+            `;
+
+            // Ajouter la nouvelle carte au début de la grille de la galerie
+            const galleryGrid = document.getElementById('gallery-grid');
+            galleryGrid.insertBefore(newCard, galleryGrid.firstChild);
+
+            // Réinitialiser le formulaire
+            this.reset();
+            document.getElementById('annee').value = new Date().getFullYear();
+
+            // Afficher le message de succès (Toast)
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            
+            // Cacher le message après 3 secondes
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+
+            // Faire défiler la page doucement vers la galerie pour voir l'ajout
+            document.getElementById('galerie').scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
